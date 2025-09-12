@@ -1,5 +1,5 @@
-import StockChart from '@/components/StockChart';
 import Recommendations from '@/components/Recommendations';
+import ChartWrapper from '@/components/ChartWrapper';
 
 export default function Home() {
   return (
@@ -22,7 +22,7 @@ export default function Home() {
         <div className="lg:col-span-2">
           <h2 className="text-3xl font-bold mb-4 text-slate-100">S&P 500 (Simulated)</h2>
           <div className="bg-slate-800 rounded-lg p-4 border border-slate-700 min-h-[400px]">
-            <StockChart />
+            <ChartWrapper />
           </div>
         </div>
 
