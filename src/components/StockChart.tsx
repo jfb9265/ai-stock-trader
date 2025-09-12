@@ -1,6 +1,6 @@
 'use client';
 
-import { createChart, ColorType } from 'lightweight-charts';
+import { createChart, ColorType, IChartApi } from 'lightweight-charts';
 import { useEffect, useRef } from 'react';
 
 // Function to generate simulated stock data
@@ -41,7 +41,7 @@ const StockChart = () => {
       chart.applyOptions({ width: chartContainerRef.current?.clientWidth });
     };
 
-    const chart = createChart(chartContainerRef.current, {
+    const chart: IChartApi = createChart(chartContainerRef.current, {
       layout: {
         background: { type: ColorType.Solid, color: '#1e293b' }, // slate-800
         textColor: '#d1d5db', // gray-300
@@ -54,6 +54,7 @@ const StockChart = () => {
       height: 350,
     });
 
+    // @ts-expect-error lightweight-charts type issue
     const candlestickSeries = chart.addCandlestickSeries({
       upColor: '#22c55e', // green-500
       downColor: '#ef4444', // red-500
