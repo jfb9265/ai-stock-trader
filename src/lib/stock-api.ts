@@ -1,4 +1,3 @@
-'''
 // src/lib/stock-api.ts
 
 const API_KEY = process.env.FINNHUB_API_KEY;
@@ -62,4 +61,3 @@ export const fetchHighGrowthStocks = async () => {
   stocks.sort((a, b) => (b.dp || 0) - (a.dp || 0));
   return stocks;
 };
-'''
