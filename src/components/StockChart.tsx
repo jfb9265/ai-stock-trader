@@ -4,7 +4,6 @@ import { createChart, ColorType, IChartApi, CandlestickSeries, UTCTimestamp, ISe
 import { useEffect, useRef, useState } from 'react';
 import { fetchHistoricalData } from '@/lib/stock-api';
 
-// Define the props for the component
 interface StockChartProps {
   symbol?: string;
 }
@@ -16,65 +15,56 @@ const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Effect for chart creation and destruction
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    // Initialize chart
-    chartRef.current = createChart(chartContainerRef.current, {
+    const chart = createChart(chartContainerRef.current, {
       layout: {
         background: { type: ColorType.Solid, color: 'transparent' },
-        textColor: '#E5E7EB', // gray-200
+        textColor: '#E5E7EB',
       },
       grid: {
         vertLines: { color: 'rgba(255, 255, 255, 0.1)' },
         horzLines: { color: 'rgba(255, 255, 255, 0.1)' },
       },
-      width: chartContainerRef.current.clientWidth,
-      height: chartContainerRef.current.clientHeight, // Make height responsive
+      autoSize: true, // Use the built-in auto-size feature
     });
+    chartRef.current = chart;
 
-    seriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
-      upColor: '#34D399', // Emerald-400 (accent color)
-      downColor: '#F43F5E', // Rose-500
+    seriesRef.current = chart.addSeries(CandlestickSeries, {
+      upColor: '#34D399',
+      downColor: '#F43F5E',
       borderDownColor: '#F43F5E',
       borderUpColor: '#34D399',
       wickDownColor: '#F43F5E',
       wickUpColor: '#34D399',
     });
 
-    const handleResize = () => {
-      chartRef.current?.applyOptions({ 
-        width: chartContainerRef.current?.clientWidth,
-        height: chartContainerRef.current?.clientHeight,
-      });
-    };
-
-    window.addEventListener('resize', handleResize);
-
     return () => {
-      window.removeEventListener('resize', handleResize);
-      chartRef.current?.remove();
+      if (chartRef.current) {
+        chartRef.current.remove();
+      }
     };
   }, []);
 
+  // Effect for loading data when symbol changes
   useEffect(() => {
-    if (!seriesRef.current) return;
+    if (!seriesRef.current || !chartRef.current) return;
 
     const getChartData = async () => {
       setLoading(true);
       setError(null);
       try {
         const to = Math.floor(Date.now() / 1000);
-        const from = to - (365 * 24 * 60 * 60); // One year ago
-        const resolution = 'D'; // Daily resolution
+        const from = to - (365 * 24 * 60 * 60);
+        const resolution = 'D';
 
         const data = await fetchHistoricalData(symbol, resolution, from, to);
 
-        if (data.s === 'no_data' || data.c.length === 0) {
+        if (data.s === 'no_data' || !data.c || data.c.length === 0) {
           setError(`No historical data found for symbol ${symbol}.`);
-          if (seriesRef.current) {
-            seriesRef.current.setData([]); // Clear previous data
-          }
+          seriesRef.current?.setData([]);
         } else {
           const formattedData = data.t.map((time: number, index: number) => ({
             time: time as UTCTimestamp,
@@ -83,27 +73,19 @@ const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
             low: data.l[index],
             close: data.c[index],
           }));
-          if (seriesRef.current) {
-            seriesRef.current.setData(formattedData);
-          }
+          seriesRef.current?.setData(formattedData);
           chartRef.current?.timeScale().fitContent();
         }
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          setError(e.message);
-        } else {
-          setError('An unknown error occurred.');
-        }
-        if (seriesRef.current) {
-          seriesRef.current.setData([]); // Clear previous data
-        }
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'An unknown error occurred.');
+        seriesRef.current?.setData([]);
       } finally {
         setLoading(false);
       }
     };
 
     getChartData();
-  }, [symbol]); // Re-run when symbol changes
+  }, [symbol]);
 
   return (
     <div className="relative h-full w-full">

@@ -9,8 +9,8 @@ module.exports = {
     extend: {
       colors: {
         'accent': {
-          'DEFAULT': '#34D399', // Emerald 400
-          'hover': '#10B981', // Emerald 500
+          'DEFAULT': '#F59E0B', // Amber 500
+          'hover': '#D97706', // Amber 600
         },
       },
     },

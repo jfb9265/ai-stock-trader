@@ -17,21 +17,21 @@ export default function Home() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-          <p className="text-gray-400">Search for a stock to see its performance and details.</p>
+          <h1 className="text-4xl font-serif font-bold text-white">Dashboard</h1>
+          <p className="text-gray-400 mt-1">Explore real-time stock data and insights.</p>
         </div>
         <StockSearch onSymbolSelect={handleSymbolSelect} />
       </div>
 
       {/* Main Content */}
       <div className="space-y-8">
-        {/* Glassmorphism container for StockInfo */}
-        <div className="bg-gray-400/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+        {/* Container for StockInfo */}
+        <div className="bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700">
           <StockInfo symbol={selectedSymbol} />
         </div>
         
-        {/* Glassmorphism container for StockChart */}
-        <div className="h-[500px] bg-gray-400/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+        {/* Container for StockChart */}
+        <div className="h-[500px] bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700">
           <StockChart symbol={selectedSymbol} />
         </div>
       </div>
