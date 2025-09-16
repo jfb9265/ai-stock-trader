@@ -3,6 +3,19 @@
 const API_KEY = process.env.FINNHUB_API_KEY;
 const BASE_URL = 'https://finnhub.io/api/v1';
 
+// Define a shared type for stock details
+interface StockDetails {
+  name: string;
+  ticker: string;
+  c: number;
+  d: number;
+  dp: number;
+  o: number;
+  h: number;
+  l: number;
+  pc: number;
+}
+
 // Helper function to handle API requests
 const fetchFromApi = async (endpoint: string) => {
   if (!API_KEY) {
@@ -23,7 +36,7 @@ export const searchSymbols = async (query: string) => {
 };
 
 // Fetch details and quote for a stock
-export const fetchStockDetails = async (symbol: string) => {
+export const fetchStockDetails = async (symbol: string): Promise<StockDetails> => {
   const quote = await fetchFromApi(`quote?symbol=${symbol}`);
   const profile = await fetchFromApi(`stock/profile2?symbol=${symbol}`);
   return { ...quote, ...profile };
@@ -40,13 +53,13 @@ const blueChipSymbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'JNJ', 'V', 'P
 const growthTechSymbols = ['TSLA', 'META', 'AMD', 'NFLX', 'CRM', 'ADBE', 'PYPL', 'INTC', 'CSCO', 'ORCL'];
 
 // Fetch details for a list of symbols
-const fetchStockBatch = async (symbols: string[]) => {
+const fetchStockBatch = async (symbols: string[]): Promise<StockDetails[]> => {
   const promises = symbols.map(symbol => fetchStockDetails(symbol));
   const results = await Promise.allSettled(promises);
   return results
     .filter(result => result.status === 'fulfilled')
-    .map(result => (result as PromiseFulfilledResult<any>).value)
-    .filter(stock => stock.name); // Filter out any stocks that failed to fetch a profile
+    .map(result => (result as PromiseFulfilledResult<StockDetails>).value)
+    .filter(stock => stock && stock.name); // Filter out any stocks that failed to fetch a profile
 };
 
 // Fetch stable, blue-chip stocks

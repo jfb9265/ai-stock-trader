@@ -1,6 +1,6 @@
 'use client';
 
-import { createChart, ColorType, IChartApi, CandlestickSeries, UTCTimestamp } from 'lightweight-charts';
+import { createChart, ColorType, IChartApi, CandlestickSeries, UTCTimestamp, ISeriesApi } from 'lightweight-charts';
 import { useEffect, useRef, useState } from 'react';
 import { fetchHistoricalData } from '@/lib/stock-api';
 
@@ -12,7 +12,7 @@ interface StockChartProps {
 const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<any | null>(null);
+  const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -81,8 +81,12 @@ const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
           seriesRef.current.setData(formattedData);
           chartRef.current?.timeScale().fitContent();
         }
-      } catch (e: any) {
-        setError(e.message || 'Failed to fetch stock data.');
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError('An unknown error occurred.');
+        }
         seriesRef.current.setData([]); // Clear previous data
       } finally {
         setLoading(false);

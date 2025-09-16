@@ -7,8 +7,20 @@ interface StockInfoProps {
   symbol: string;
 }
 
+interface StockDetails {
+  name: string;
+  ticker: string;
+  c: number;
+  d: number;
+  dp: number;
+  o: number;
+  h: number;
+  l: number;
+  pc: number;
+}
+
 const StockInfo = ({ symbol }: StockInfoProps) => {
-  const [stock, setStock] = useState<any>(null);
+  const [stock, setStock] = useState<StockDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
