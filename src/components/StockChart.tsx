@@ -1,6 +1,6 @@
 'use client';
 
-import { createChart, ColorType, IChartApi } from 'lightweight-charts';
+import { createChart, ColorType, IChartApi, CandlestickSeries } from 'lightweight-charts';
 import { useEffect, useRef } from 'react';
 
 // Function to generate simulated stock data
@@ -54,8 +54,7 @@ const StockChart = () => {
       height: 350,
     });
 
-    // @ts-expect-error lightweight-charts type issue
-    const candlestickSeries = chart.addCandlestickSeries({
+    const candlestickSeries = chart.addSeries(CandlestickSeries, {
       upColor: '#22c55e', // green-500
       downColor: '#ef4444', // red-500
       borderDownColor: '#ef4444',
