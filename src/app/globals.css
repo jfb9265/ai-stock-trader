@@ -6,7 +6,4 @@
   :root {
     --font-lora: var(--font-lora); /* This will be replaced by the actual font-family from next/font */
   }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-lora);
-  }
 }

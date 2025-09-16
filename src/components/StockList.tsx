@@ -36,7 +36,7 @@ const StockList = ({ stocks }: StockListProps) => {
                 <h3 className="text-xl font-serif font-bold text-white truncate">{stock.name}</h3>
                 <p className="text-sm text-gray-400">{stock.ticker}</p>
               </div>
-              <Link href={purchaseLink} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1 bg-gray-700 text-gray-300 rounded-full hover:bg-accent hover:text-white transition-colors">
+              <Link href={purchaseLink} target="_blank" rel="noopener noreferrer" className="text-xs px-2 py-0.5 bg-gray-700 text-gray-300 rounded-full hover:bg-accent hover:text-white transition-colors">
                 Info
               </Link>
             </div>
