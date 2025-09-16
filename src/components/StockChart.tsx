@@ -1,83 +1,103 @@
 'use client';
 
-import { createChart, ColorType, IChartApi, CandlestickSeries } from 'lightweight-charts';
-import { useEffect, useRef } from 'react';
+import { createChart, ColorType, IChartApi, CandlestickSeries, UTCTimestamp } from 'lightweight-charts';
+import { useEffect, useRef, useState } from 'react';
+import { fetchHistoricalData } from '@/lib/stock-api';
 
-// Function to generate simulated stock data
-const generateDailyData = (numPoints = 200) => {
-  const data = [];
-  let price = 5000 + Math.random() * 100;
-  const today = new Date();
+// Define the props for the component
+interface StockChartProps {
+  symbol?: string;
+}
 
-  for (let i = numPoints - 1; i >= 0; i--) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    
-    const open = price;
-    const close = open + (Math.random() - 0.5) * 50;
-    const high = Math.max(open, close) + Math.random() * 20;
-    const low = Math.min(open, close) - Math.random() * 20;
-
-    data.push({
-      time: date.toISOString().split('T')[0], // Format as YYYY-MM-DD
-      open: open,
-      high: high,
-      low: low,
-      close: close,
-    });
-
-    price = close;
-  }
-  return data;
-};
-
-const StockChart = () => {
+const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<IChartApi | null>(null);
+  const seriesRef = useRef<any | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    const handleResize = () => {
-      chart.applyOptions({ width: chartContainerRef.current?.clientWidth });
-    };
-
-    const chart: IChartApi = createChart(chartContainerRef.current, {
+    // Initialize chart
+    chartRef.current = createChart(chartContainerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: '#1e293b' }, // slate-800
-        textColor: '#d1d5db', // gray-300
+        background: { type: ColorType.Solid, color: '#1e293b' },
+        textColor: '#d1d5db',
       },
       grid: {
-        vertLines: { color: '#334155' }, // slate-700
-        horzLines: { color: '#334155' }, // slate-700
+        vertLines: { color: '#334155' },
+        horzLines: { color: '#334155' },
       },
       width: chartContainerRef.current.clientWidth,
       height: 350,
     });
 
-    const candlestickSeries = chart.addSeries(CandlestickSeries, {
-      upColor: '#22c55e', // green-500
-      downColor: '#ef4444', // red-500
+    seriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
+      upColor: '#22c55e',
+      downColor: '#ef4444',
       borderDownColor: '#ef4444',
       borderUpColor: '#22c55e',
       wickDownColor: '#ef4444',
       wickUpColor: '#22c55e',
     });
 
-    const simulatedData = generateDailyData();
-    candlestickSeries.setData(simulatedData);
-
-    chart.timeScale().fitContent();
+    const handleResize = () => {
+      chartRef.current?.applyOptions({ width: chartContainerRef.current?.clientWidth });
+    };
 
     window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      chart.remove();
+      chartRef.current?.remove();
     };
   }, []);
 
+  useEffect(() => {
+    if (!seriesRef.current) return;
+
+    const getChartData = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const to = Math.floor(Date.now() / 1000);
+        const from = to - (365 * 24 * 60 * 60); // One year ago
+        const resolution = 'D'; // Daily resolution
+
+        const data = await fetchHistoricalData(symbol, resolution, from, to);
+
+        if (data.s === 'no_data' || data.c.length === 0) {
+          setError(`No historical data found for symbol ${symbol}.`);
+          seriesRef.current.setData([]); // Clear previous data
+        } else {
+          const formattedData = data.t.map((time: number, index: number) => ({
+            time: time as UTCTimestamp,
+            open: data.o[index],
+            high: data.h[index],
+            low: data.l[index],
+            close: data.c[index],
+          }));
+          seriesRef.current.setData(formattedData);
+          chartRef.current?.timeScale().fitContent();
+        }
+      } catch (e: any) {
+        setError(e.message || 'Failed to fetch stock data.');
+        seriesRef.current.setData([]); // Clear previous data
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getChartData();
+  }, [symbol]); // Re-run when symbol changes
+
   return (
-    <div ref={chartContainerRef} className="h-full w-full" />
+    <div className="relative h-full w-full">
+      {loading && <div className="absolute inset-0 flex items-center justify-center bg-slate-800 bg-opacity-50 z-10">Loading chart...</div>}
+      {error && <div className="absolute inset-0 flex items-center justify-center bg-red-900 bg-opacity-70 text-white z-10">{error}</div>}
+      <div ref={chartContainerRef} className="h-full w-full" />
+    </div>
   );
 };
 

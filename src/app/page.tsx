@@ -1,38 +1,36 @@
-import Recommendations from '@/components/Recommendations';
-import ChartWrapper from '@/components/ChartWrapper';
+'use client';
+
+import { useState } from 'react';
+import StockChart from '@/components/StockChart';
+import StockSearch from '@/components/StockSearch';
+import StockInfo from '@/components/StockInfo';
 
 export default function Home() {
-  return (
-    <div className="space-y-12">
-      {/* Hero Section */}
-      <div className="text-center pt-8 pb-4">
-        <h1 className="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
-          AI Trading Dashboard
-        </h1>
-        <p className="mt-4 text-lg text-slate-400 max-w-3xl mx-auto">
-          An educational dashboard displaying simulated market data and AI-driven stock picks.
-          <span className="font-semibold text-yellow-400 block mt-2">This is not financial advice. All data is for demonstrative purposes only.</span>
-        </p>
-      </div>
+  const [selectedSymbol, setSelectedSymbol] = useState('AAPL');
 
-      {/* Main Dashboard Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  const handleSymbolSelect = (symbol: string) => {
+    setSelectedSymbol(symbol);
+  };
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-start p-4 md:p-8 lg:p-12 bg-slate-900 text-white">
+      <div className="w-full max-w-6xl">
         
-        {/* Stock Chart (Main Column) */}
-        <div className="lg:col-span-2">
-          <h2 className="text-3xl font-bold mb-4 text-slate-100">S&P 500 (Simulated)</h2>
-          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700 min-h-[400px]">
-            <ChartWrapper />
+        {/* Header */}
+        <header className="flex flex-col md:flex-row justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-4 md:mb-0">AI Stock Trader</h1>
+          <StockSearch onSymbolSelect={handleSymbolSelect} />
+        </header>
+
+        {/* Main Content */}
+        <div className="w-full space-y-8">
+          <StockInfo symbol={selectedSymbol} />
+          <div className="h-[400px] md:h-[500px] bg-slate-800 rounded-lg shadow-md p-4">
+            <StockChart symbol={selectedSymbol} />
           </div>
         </div>
 
-        {/* Recommendations (Sidebar) */}
-        <div className="lg:col-span-1">
-          <h2 className="text-3xl font-bold mb-4 text-slate-100">Simulated AI Picks</h2>
-          <Recommendations />
-        </div>
-
       </div>
-    </div>
+    </main>
   );
 }
