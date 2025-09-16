@@ -69,7 +69,9 @@ const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
 
         if (data.s === 'no_data' || data.c.length === 0) {
           setError(`No historical data found for symbol ${symbol}.`);
-          seriesRef.current.setData([]); // Clear previous data
+          if (seriesRef.current) {
+            seriesRef.current.setData([]); // Clear previous data
+          }
         } else {
           const formattedData = data.t.map((time: number, index: number) => ({
             time: time as UTCTimestamp,
@@ -78,7 +80,9 @@ const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
             low: data.l[index],
             close: data.c[index],
           }));
-          seriesRef.current.setData(formattedData);
+          if (seriesRef.current) {
+            seriesRef.current.setData(formattedData);
+          }
           chartRef.current?.timeScale().fitContent();
         }
       } catch (e: unknown) {
@@ -87,7 +91,9 @@ const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
         } else {
           setError('An unknown error occurred.');
         }
-        seriesRef.current.setData([]); // Clear previous data
+        if (seriesRef.current) {
+          seriesRef.current.setData([]); // Clear previous data
+        }
       } finally {
         setLoading(false);
       }
