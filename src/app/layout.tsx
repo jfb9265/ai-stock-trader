@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI Stock Trader Guide",
-  description: "An educational guide on building an AI for stock trading.",
+  title: "AI Stock Trader",
+  description: "An interactive dashboard for AI-driven stock analysis.",
 };
 
 export default function RootLayout({
@@ -18,13 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-slate-900 text-slate-200`}>
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow container mx-auto p-4">
+      <body className={`${inter.className} bg-gradient-to-br from-gray-900 to-blue-900 text-gray-200`}>
+        <div className="flex h-screen">
+          <Sidebar />
+          <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
             {children}
           </main>
-          <Footer />
         </div>
       </body>
     </html>

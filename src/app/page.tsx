@@ -13,24 +13,28 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start p-4 md:p-8 lg:p-12 bg-slate-900 text-white">
-      <div className="w-full max-w-6xl">
-        
-        {/* Header */}
-        <header className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4 md:mb-0">AI Stock Trader</h1>
-          <StockSearch onSymbolSelect={handleSymbolSelect} />
-        </header>
-
-        {/* Main Content */}
-        <div className="w-full space-y-8">
-          <StockInfo symbol={selectedSymbol} />
-          <div className="h-[400px] md:h-[500px] bg-slate-800 rounded-lg shadow-md p-4">
-            <StockChart symbol={selectedSymbol} />
-          </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+          <p className="text-gray-400">Search for a stock to see its performance and details.</p>
         </div>
-
+        <StockSearch onSymbolSelect={handleSymbolSelect} />
       </div>
-    </main>
+
+      {/* Main Content */}
+      <div className="space-y-8">
+        {/* Glassmorphism container for StockInfo */}
+        <div className="bg-gray-400/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+          <StockInfo symbol={selectedSymbol} />
+        </div>
+        
+        {/* Glassmorphism container for StockChart */}
+        <div className="h-[500px] bg-gray-400/10 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+          <StockChart symbol={selectedSymbol} />
+        </div>
+      </div>
+    </div>
   );
 }

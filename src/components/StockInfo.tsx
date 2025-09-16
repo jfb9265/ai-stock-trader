@@ -37,11 +37,23 @@ const StockInfo = ({ symbol }: StockInfoProps) => {
   }, [symbol]);
 
   if (loading) {
-    return <div className="h-24 animate-pulse bg-slate-700 rounded-lg"></div>;
+    // A more fitting loading state for the new design
+    return (
+      <div className="h-36">
+        <div className="h-8 w-1/2 bg-gray-400/20 rounded-md animate-pulse mb-4"></div>
+        <div className="h-12 w-1/3 bg-gray-400/20 rounded-md animate-pulse mb-4"></div>
+        <div className="grid grid-cols-4 gap-4">
+          <div className="h-8 bg-gray-400/20 rounded-md animate-pulse"></div>
+          <div className="h-8 bg-gray-400/20 rounded-md animate-pulse"></div>
+          <div className="h-8 bg-gray-400/20 rounded-md animate-pulse"></div>
+          <div className="h-8 bg-gray-400/20 rounded-md animate-pulse"></div>
+        </div>
+      </div>
+    );
   }
 
   if (!stock || !stock.name) {
-    return null; // Don't render if no stock data
+    return <div className="h-36 flex items-center justify-center"><p>Could not load stock details.</p></div>;
   }
 
   const change = stock.d || 0;
@@ -49,15 +61,15 @@ const StockInfo = ({ symbol }: StockInfoProps) => {
   const isPositive = change >= 0;
 
   return (
-    <div className="p-6 bg-slate-800 rounded-lg shadow-md">
-      <h2 className="text-3xl font-bold text-white">{stock.name} ({stock.ticker})</h2>
+    <div>
+      <h2 className="text-3xl font-bold text-white">{stock.name} <span className="text-gray-400">({stock.ticker})</span></h2>
       <div className="flex items-baseline mt-2">
         <p className="text-4xl font-bold text-white">${stock.c?.toFixed(2)}</p>
-        <p className={`ml-4 text-xl font-semibold ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+        <p className={`ml-4 text-xl font-semibold ${isPositive ? 'text-accent' : 'text-rose-500'}`}>
           {isPositive ? '+' : ''}{change.toFixed(2)} ({changePercent.toFixed(2)}%)
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 text-sm border-t border-white/10 pt-4">
         <div>
           <p className="text-gray-400">Open</p>
           <p className="text-white font-medium">${stock.o?.toFixed(2)}</p>

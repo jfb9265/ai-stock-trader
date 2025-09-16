@@ -5,11 +5,13 @@ export default async function HighGrowthPage() {
   const stocks = await fetchHighGrowthStocks();
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-white mb-4">High-Growth Stocks</h1>
-      <p className="text-slate-400 mb-8">
-        This list features technology stocks with strong recent positive momentum (highest daily percentage change). This is a high-risk, high-reward category.
-      </p>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-white">High-Risk / High-Reward</h1>
+        <p className="text-gray-400 mt-2">
+          A curated list of technology stocks selected for their strong recent positive momentum. These are typically more volatile and are considered high-risk.
+        </p>
+      </div>
       <StockList stocks={stocks} />
     </div>
   );

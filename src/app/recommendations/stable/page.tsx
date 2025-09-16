@@ -5,11 +5,13 @@ export default async function StablePage() {
   const stocks = await fetchStableStocks();
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-white mb-4">Stable Blue-Chip Stocks</h1>
-      <p className="text-slate-400 mb-8">
-        This list features large-cap, well-established companies known for their stability and market leadership. This is generally considered a lower-risk category.
-      </p>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-white">Stable Blue-Chip</h1>
+        <p className="text-gray-400 mt-2">
+          A curated list of large-cap, well-established companies known for their market leadership and stability. These are generally considered lower-risk investments.
+        </p>
+      </div>
       <StockList stocks={stocks} />
     </div>
   );

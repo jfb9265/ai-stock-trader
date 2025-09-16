@@ -60,19 +60,19 @@ const StockSearch = ({ onSymbolSelect }: StockSearchProps) => {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search for a stock..."
-        className="w-full px-4 py-2 text-white bg-slate-700 border border-slate-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Search symbol..."
+        className="w-full px-4 py-2 text-white bg-white/5 border border-white/10 rounded-lg backdrop-blur-lg focus:outline-none focus:ring-2 focus:ring-accent"
       />
       {isOpen && results.length > 0 && (
-        <ul className="absolute z-20 w-full mt-1 bg-slate-700 border border-slate-600 rounded-md shadow-lg">
+        <ul className="absolute z-20 w-full mt-2 bg-gray-700/50 border border-white/10 rounded-lg shadow-lg backdrop-blur-lg">
           {results.map((item) => (
             <li
               key={item.symbol}
               onClick={() => handleSelect(item.symbol)}
-              className="px-4 py-2 cursor-pointer hover:bg-slate-600"
+              className="px-4 py-2 cursor-pointer hover:bg-accent/20"
             >
-              <span className="font-bold">{item.symbol}</span>
-              <span className="ml-2 text-sm text-gray-400">{item.description}</span>
+              <span className="font-bold text-white">{item.symbol}</span>
+              <span className="ml-2 text-sm text-gray-300">{item.description}</span>
             </li>
           ))}
         </ul>

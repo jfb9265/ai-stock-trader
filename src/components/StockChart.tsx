@@ -22,28 +22,31 @@ const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
     // Initialize chart
     chartRef.current = createChart(chartContainerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: '#1e293b' },
-        textColor: '#d1d5db',
+        background: { type: ColorType.Solid, color: 'transparent' },
+        textColor: '#E5E7EB', // gray-200
       },
       grid: {
-        vertLines: { color: '#334155' },
-        horzLines: { color: '#334155' },
+        vertLines: { color: 'rgba(255, 255, 255, 0.1)' },
+        horzLines: { color: 'rgba(255, 255, 255, 0.1)' },
       },
       width: chartContainerRef.current.clientWidth,
-      height: 350,
+      height: chartContainerRef.current.clientHeight, // Make height responsive
     });
 
     seriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
-      upColor: '#22c55e',
-      downColor: '#ef4444',
-      borderDownColor: '#ef4444',
-      borderUpColor: '#22c55e',
-      wickDownColor: '#ef4444',
-      wickUpColor: '#22c55e',
+      upColor: '#34D399', // Emerald-400 (accent color)
+      downColor: '#F43F5E', // Rose-500
+      borderDownColor: '#F43F5E',
+      borderUpColor: '#34D399',
+      wickDownColor: '#F43F5E',
+      wickUpColor: '#34D399',
     });
 
     const handleResize = () => {
-      chartRef.current?.applyOptions({ width: chartContainerRef.current?.clientWidth });
+      chartRef.current?.applyOptions({ 
+        width: chartContainerRef.current?.clientWidth,
+        height: chartContainerRef.current?.clientHeight,
+      });
     };
 
     window.addEventListener('resize', handleResize);
@@ -104,8 +107,8 @@ const StockChart = ({ symbol = 'AAPL' }: StockChartProps) => {
 
   return (
     <div className="relative h-full w-full">
-      {loading && <div className="absolute inset-0 flex items-center justify-center bg-slate-800 bg-opacity-50 z-10">Loading chart...</div>}
-      {error && <div className="absolute inset-0 flex items-center justify-center bg-red-900 bg-opacity-70 text-white z-10">{error}</div>}
+      {loading && <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm z-10 rounded-2xl"><p>Loading Chart...</p></div>}
+      {error && <div className="absolute inset-0 flex items-center justify-center bg-rose-500/50 backdrop-blur-sm text-white z-10 rounded-2xl"><p>{error}</p></div>}
       <div ref={chartContainerRef} className="h-full w-full" />
     </div>
   );
